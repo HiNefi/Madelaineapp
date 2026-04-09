@@ -1,91 +1,24 @@
-<!DOCTYPE html>
+@app.route("/api/status")
+def api_status():
+    try:
+        from whatsapp_sender import WhatsAppSender
+        wa = WhatsAppSender.get_instance()
+        return jsonify({"connected": wa.is_connected()})
+    except Exception as e:
+        return jsonify({"connected": False}), 500
 
-<html lang="es">
+@app.route("/api/send-test", methods=["POST"])
+def api_send_test():
+    try:
+        from whatsapp_sender import WhatsAppSender
+        wa = WhatsAppSender.get_instance()
+        if not wa.is_connected():
+            return jsonify({"error": "WhatsApp no conectado"}), 400
+        success = wa.send_message("✅ Mensaje de prueba desde Railway")
+        return jsonify({"success": success})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
-<head>
-
-    <meta charset="UTF-8">
-
-    <title>Mensajes de Amor</title>
-
-    <style>
-
-        body {
-
-            font-family: -apple-system, sans-serif;
-
-            padding: 20px;
-
-            background: #fff;
-
-            color: #000;
-
-        }
-
-        h1 {
-
-            margin-bottom: 24px;
-
-        }
-
-        button {
-
-            display: block;
-
-            margin: 8px 0;
-
-            padding: 12px 20px;
-
-            background: #111;
-
-            color: white;
-
-            border: none;
-
-            border-radius: 6px;
-
-            cursor: pointer;
-
-            font-size: 16px;
-
-        }
-
-        button:hover {
-
-            background: #333;
-
-        }
-
-        .status {
-
-            margin-top: 20px;
-
-            padding: 10px;
-
-            background: #f8f8f8;
-
-            border-left: 4px solid #090;
-
-        }
-
-    </style>
-
-</head>
-
-<body>
-
-    <h1>Mensajes de Amor</h1>
-
-    <button onclick="alert('Buenos Días')">Buenos Días</button>
-
-    <button onclick="alert('Buenas Noches')">Buenas Noches</button>
-
-    <button onclick="alert('Enviados')">Enviados</button>
-
-    <button onclick="alert('Agregar Mensaje')">Agregar Mensaje</button>
-
-    <div class="status">Estado: <span style="color:green">● Online</span></div>
-
-</body>
-
-</html>
+@app.route("/api/messages", methods=["POST"])
+def api_add_message():
+    # ... (tu lógica actual)
