@@ -1,6 +1,5 @@
 [deploy]
-# One worker is required so the WhatsApp Selenium singleton stays alive.
-startCommand = "gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app"
+startCommand = "/bin/sh -c 'gunicorn --bind 0.0.0.0:$PORT --workers 1 --timeout 120 app:app'"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
 
