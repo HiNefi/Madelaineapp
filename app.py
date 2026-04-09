@@ -1,22 +1,24 @@
 import os
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from datetime import datetime
 
+# === Lazy DB init (evita circular import) ===
 def get_db():
     if not hasattr(get_db, "_instance"):
         from database import Database
         get_db._instance = Database()
     return get_db._instance
 
+# === App setup ===
 app = Flask(__name__, static_folder='templates')
 
+# === Rutas ===
 @app.route("/")
 def index():
     try:
-        from flask import send_from_directory
         return send_from_directory(app.static_folder, "index.html")
     except FileNotFoundError:
-        return "<h1>✅ App running — but templates/index.html missing.</h1><p>Upload it to fix.</p>", 200
+        return "<h1>⚠️ templates/index.html no encontrado</h1><p>Crea templates/index.html para continuar.</p>", 404
 
 @app.route("/api/messages", methods=["POST"])
 def api_add_message():
@@ -42,6 +44,7 @@ def api_delete(msg_id):
     db.delete_message(msg_id)
     return jsonify({"success": True})
 
+# ✅ Endpoint requerido para el indicador de estado
 @app.route("/api/status")
 def api_status():
     try:
@@ -51,6 +54,7 @@ def api_status():
     except Exception as e:
         return jsonify({"connected": False, "error": str(e)}), 500
 
+# ✅ Endpoint para prueba inmediata
 @app.route("/api/send-test", methods=["POST"])
 def api_send_test():
     try:
@@ -63,6 +67,7 @@ def api_send_test():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# === Inicio ===
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
