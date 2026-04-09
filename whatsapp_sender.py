@@ -11,7 +11,6 @@ from selenium.webdriver.support.ui import WebDriverWait
 
 log = logging.getLogger(__name__)
 
-# Configuración desde variables de entorno
 RECIPIENT = os.environ.get("RECIPIENT_NUMBER", "593984595984")
 SESSION_DIR = os.environ.get("WA_SESSION_DIR", "./data/whatsapp_session")
 CHROME_BIN = os.environ.get("CHROME_BIN", "/usr/bin/chromium")
@@ -70,7 +69,9 @@ class WhatsAppSender:
 
     def is_connected(self) -> bool:
         self._refresh_status()
-        return self._    def send_message(self, text: str) -> bool:
+        return self._connected
+
+    def send_message(self, text: str) -> bool:
         if not self.driver:
             log.warning("Driver not available – cannot send.")
             return False
