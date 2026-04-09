@@ -12,10 +12,7 @@ app = Flask(__name__, static_folder='templates')
 
 @app.route("/")
 def index():
-    try:
-        return send_from_directory(app.static_folder, "index.html")
-    except FileNotFoundError:
-        return "<h1>✅ App running — but index.html missing.</h1><p>Upload templates/index.html to fix.</p>", 200
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/api/messages", methods=["POST"])
 def api_add_message():
