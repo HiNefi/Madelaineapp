@@ -1,5 +1,5 @@
 import os
-from flask import Flask, request, jsonify, send_from_directory
+from flask import Flask, request, jsonify
 from datetime import datetime
 
 def get_db():
@@ -12,11 +12,18 @@ app = Flask(__name__, static_folder='templates')
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    try:
+        from flask import send_from_directory
+        return send_from_directory(app.static_folder, "index.html")
+    except FileNotFoundError:
+        return "<h1>✅ App running — but templates/index.html missing.</h1><p>Upload it to fix.</p>", 200
 
 @app.route("/api/messages", methods=["POST"])
 def api_add_message():
     data = request.get_json()
+    if not data:
+        return jsonify({"error": "JSON inválido"}), 400
+
     message = data.get("message", "").strip()
     schedule_time = data.get("schedule_time", "")
 
@@ -58,4 +65,4 @@ def api_send_test():
 
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0", port=port, debug=True)
+    app.run(host="0.0.0.0", port=port, debug=True)
