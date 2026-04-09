@@ -1,56 +1,29 @@
-"""
-Scheduler: fires at 07:00 and 19:00 Ecuador time (America/Guayaquil, UTC-5).
-Picks the oldest unsent message for each slot and sends it via WhatsApp.
-"""
-
-import logging
-
-import pytz
+import os
 from apscheduler.schedulers.background import BackgroundScheduler
-from apscheduler.triggers.cron import CronTrigger
+from datetime import datetime, timedelta
 
-log = logging.getLogger(__name__)
-ECU = pytz.timezone("America/Guayaquil")
+def get_db():
+    if not hasattr(get_db, "_instance"):
+        from database import Database
+        get_db._instance = Database()
+    return get_db._instance
 
+def schedule_daily_tasks():
+    scheduler = BackgroundScheduler()
+    
+    # Ejemplo: disparar a las 7:00 AM y 7:00 PM (hora local del servidor — ajusta si necesitas UTC)
+    scheduler.add_job(send_pending_messages, 'cron', hour=7, minute=0, timezone='America/Guayaquil')
+    scheduler.add_job(send_pending_messages, 'cron', hour=19, minute=0, timezone='America/Guayaquil')
+    
+    scheduler.start()
+    return scheduler
 
-class MessageScheduler:
-    def __init__(self, db, wa_sender):
-        self.db        = db
-        self.wa        = wa_sender
-        self._sched    = BackgroundScheduler(timezone=ECU)
-
-        self._sched.add_job(
-            self._send_morning,
-            CronTrigger(hour=7, minute=0, timezone=ECU),
-            id="morning",
-            replace_existing=True,
-        )
-        self._sched.add_job(
-            self._send_night,
-            CronTrigger(hour=19, minute=0, timezone=ECU),
-            id="night",
-            replace_existing=True,
-        )
-
-    def start(self):
-        self._sched.start()
-        log.info("Scheduler started – jobs: 07:00 & 19:00 ECU")
-
-    # ------------------------------------------------------------------
-    def _dispatch(self, slot: str):
-        msg = self.db.get_next_unsent(slot)
-        if not msg:
-            log.info("No unsent messages for slot %s", slot)
-            return
-        log.info("Sending msg id=%s slot=%s", msg["id"], slot)
-        ok = self.wa.send_message(msg["message"])
-        if ok:
-            self.db.mark_sent(msg["id"])
-        else:
-            log.error("Failed to send msg id=%s – will retry next slot", msg["id"])
-
-    def _send_morning(self):
-        self._dispatch("7:00 AM")
-
-    def _send_night(self):
-        self._dispatch("7:00 PM")
+def send_pending_messages():
+    db = get_db()
+    # Aquí iría tu lógica para enviar mensajes pendientes
+    # Ejemplo:
+    # pending = db.get_pending("7:00 AM")  # o "7:00 PM"
+    # for msg_id, msg, _, _ in pending:
+    #     if WhatsAppSender.get_instance().send_message(msg):
+    #         db.mark_as_sent(msg_id)
+    pass
