@@ -7,11 +7,10 @@ DB_PATH = os.environ.get("DB_PATH", "./data/love_messages.db")
 class Database:
     def __init__(self):
         self.db_path = DB_PATH
-        # NO llamar _init_db aquí → se hará al primer uso
         self._conn = None
 
     def _get_conn(self):
-        if self._conn is None or not self._conn.closed:
+        if self._conn is None:
             self._conn = sqlite3.connect(self.db_path)
         return self._conn
 
@@ -30,7 +29,7 @@ class Database:
         conn.commit()
 
     def add_message(self, message: str, schedule_time: str):
-        self._init_db()  # Lazy init: solo al primer uso
+        self._init_db()
         created_at = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         conn = self._get_conn()
         cursor = conn.cursor()
