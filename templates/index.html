@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Mensajes de Amor</title>
   <style>
     :root {
@@ -10,27 +10,15 @@
       --gray-100: #f8f9fa;
       --gray-200: #e9ecef;
       --gray-300: #dee2e6;
-      --gray-400: #ced4da;
       --black: #000000;
       --green: #28a745;
       --red: #dc3545;
-      --blue: #007bff;
       --shadow: rgba(0,0,0,0.08);
     }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    }
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: system-ui, sans-serif; }
 
-    body {
-      background: var(--white);
-      color: var(--black);
-      padding: 0;
-      min-height: 100vh;
-    }
+    body { background: var(--white); color: var(--black); min-height: 100vh; }
 
     /* Header */
     header {
@@ -41,28 +29,23 @@
       background: var(--white);
       border-bottom: 1px solid var(--gray-200);
       position: relative;
-      z-index: 10;
     }
-
     .clock {
       background: var(--white);
-      padding: 8px 16px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px var(--shadow);
+      padding: 6px 12px;
+      border-radius: 10px;
       font-size: 14px;
       font-weight: 500;
-      white-space: nowrap;
+      box-shadow: 0 1px 4px var(--shadow);
     }
-
-    .status {
+    .status-indicator {
       display: flex;
       align-items: center;
       gap: 8px;
       font-size: 14px;
     }
     .status-dot {
-      width: 10px;
-      height: 10px;
+      width: 10px; height: 10px;
       border-radius: 50%;
       background: var(--red);
       box-shadow: 0 0 0 2px rgba(220, 53, 69, 0.3);
@@ -81,10 +64,8 @@
     /* Sidebar */
     .sidebar {
       position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 240px;
+      top: 0; left: 0;
+      width: 240px; height: 100vh;
       background: var(--white);
       border-right: 1px solid var(--gray-200);
       padding: 24px 0;
@@ -95,9 +76,9 @@
     .sidebar-btn {
       width: 192px;
       margin: 0 auto;
-      padding: 14px 16px;
+      padding: 12px 16px;
       border: none;
-      border-radius: 12px;
+      border-radius: 10px;
       background: var(--gray-100);
       color: var(--black);
       font-weight: 500;
@@ -124,283 +105,179 @@
       max-width: 1200px;
       margin: 0 auto;
     }
-
-    .title {
-      font-size: 24px;
-      font-weight: 600;
-      margin-bottom: 24px;
-    }
-
-    .btn-primary {
-      background: var(--black);
-      color: var(--white);
-      border: none;
-      padding: 12px 24px;
-      border-radius: 12px;
-      font-weight: 500;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 6px var(--shadow);
-    }
-    .btn-primary:hover {
-      background: #1a1a1a;
-      transform: translateY(-1px);
-    }
+    .title { font-size: 24px; font-weight: 600; margin-bottom: 24px; }
 
     /* Table */
     table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 20px;
+      width: 100%; border-collapse: collapse; margin-top: 20px;
       font-size: 14px;
     }
-    th, td {
-      padding: 12px 16px;
-      text-align: left;
-      border-bottom: 1px solid var(--gray-200);
-    }
-    th {
-      font-weight: 600;
-      color: var(--black);
-      background: var(--gray-100);
-    }
-    tr:last-child td {
-      border-bottom: none;
-    }
-    .status-cell {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
+    th, td { padding: 12px 16px; text-align: left; border-bottom: 1px solid var(--gray-200); }
+    th { font-weight: 600; background: var(--gray-100); }
+    .status-cell { display: flex; align-items: center; gap: 8px; }
     .status-icon {
-      width: 14px;
-      height: 14px;
-      border-radius: 50%;
+      width: 14px; height: 14px; border-radius: 50%;
+      background: var(--gray-300);
     }
-    .status-icon.pending { background: var(--gray-300); }
     .status-icon.sent { background: var(--green); }
 
     /* Modal */
     .modal-overlay {
-      position: fixed;
-      inset: 0;
+      position: fixed; inset: 0;
       background: rgba(0,0,0,0.5);
       backdrop-filter: blur(4px);
       display: none;
       justify-content: center;
       align-items: center;
-      z-index: 100;
-    }
+      z-index: 100    }
     .modal {
       background: var(--white);
       border-radius: 16px;
-      width: 90%;
-      max-width: 600px;
+      width: 90%; max-width: 500px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.15);
-      overflow: hidden;
     }
     .modal-header {
-      padding: 20px;
-      border-bottom: 1px solid var(--gray-200);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
+      padding: 16px; border-bottom: 1px solid var(--gray-200);
+      display: flex; justify-content: space-between; align-items: center;
     }
-    .modal-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .modal-close {
-      background: none;
+    .modal-title { font-size: 18px; font-weight: 600; }
+    .modal-close { background: none; border: none; font-size: 20px; cursor: pointer; color: var(--gray-400); }
+    .modal-body { padding: 24px; }
+    .btn-primary {
+      background: var(--black);
+      color: var(--white);
       border: none;
-      font-size: 20px;
-      cursor: pointer;
-      color: var(--gray-400);
-    }
-    .modal-body {
-      padding: 24px;
-    }
-    .form-group {
-      margin-bottom: 16px;
-    }
-    label {
-      display: block;
-      margin-bottom: 6px;
-      font-weight: 500;
-      color: var(--black);
-    }
-    input, select {
-      width: 100%;
-      padding: 12px 16px;
-      border: 1px solid var(--gray-300);
+      padding: 10px 16px;
       border-radius: 8px;
-      font-size: 14px;
-      background: var(--white);
-    }
-    input:focus, select:focus {
-      outline: none;
-      border-color: var(--blue);
-    }
-    .btn-modal {
+      font-weight: 500;
+      cursor: pointer;
       width: 100%;
-      padding: 12px;
-      margin-top: 8px;
     }
+    .btn-primary:hover { background: #1a1a1a; }
 
     /* Footer */
     footer {
-      position: fixed;
-      bottom: 0;
-      left: 240px;
-      right: 0;
+      position: fixed; bottom: 0; left: 240px; right: 0;
       height: 50px;
       background: var(--white);
       border-top: 1px solid var(--gray-200);
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       padding: 0 32px;
       font-size: 13px;
       color: var(--gray-400);
-    }
-    .footer-info {
-      display: flex;
-      gap: 24px;
-    }
-
-    /* Animations */
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(10px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-    .fade-in {
-      animation: fadeIn 0.3s ease forwards;
     }
   </style>
 </head>
 <body>
 
-  <!-- Header -->
-  <header>
-    <div class="clock" id="clock">Cargando...</div>
-    <div class="status">
-      <div class="status-dot" id="status-dot"></div>
-      <span class="status-text" id="status-text">WhatsApp no vinculado</span>
-    </div>
-  </header>
-
-  <!-- Sidebar -->
-  <div class="sidebar">
-    <button class="sidebar-btn active" data-target="dashboard">Gestionar Mensajes Programados</button>
-    <button class="sidebar-btn" data-target="add">Añadir Mensaje</button>
-    <button class="sidebar-btn" data-target="config">Configuración</button>
+<header>
+  <div class="clock" id="clock">Cargando...</div>
+  <div class="status-indicator">
+    <div class="status-dot" id="status-dot"></div>
+    <span class="status-text" id="status-text">WhatsApp no vinculado</span>
   </div>
+</header>
 
-  <!-- Main -->
-  <main id="main-content">
-    <h1 class="title">Mensajes de Amor</h1>
-    <button class="btn-primary" id="btn-manage">Gestionar Mensajes Programados</button>
+<div class="sidebar">
+  <button class="sidebar-btn active" data-view="dashboard">Gestionar Mensajes Programados</button>
+  <button class="sidebar-btn" data-view="add">Añadir Mensaje</button>
+  <button class="sidebar-btn" data-view="config">Configuración</button>
+</div>
 
-    <!-- Dashboard View -->
-    <div id="view-dashboard" class="fade-in">
-      <h2> mensajes programados</h2>
-      <table>
-        <thead>
-          <tr>
-            <th>Fecha</th>
-            <th>Hora</th>
-            <th>Mensaje</th>
-            <th>Horario</th>
-            <th>Estado</th>
-          </tr>
-        </thead>
-        <tbody id="messages-table">
-          <tr><td colspan="5" style="text-align:center; padding: 40px;">No hay mensajes programados</td></tr>
-        </tbody>
-      </table>
-      <div style="margin-top: 24px; font-size: 14px; color: var(--gray-400);">
-        <strong>Resumen:</strong> <span id="summary">0 mensajes activos</span>
-      </div>
-    </div>
+<main>
+  <h1 class="title">Mensajes de Amor</h1>
 
-    <!-- Add View -->
-    <div id="view-add" style="display:none;">
-      <h2>Añadir Nuevo Mensaje</h2>
-      <div class="form-group">
-        <label>Mensaje</label>
-        <textarea id="msg-text" rows="3" placeholder="Escribe tu mensaje de amor..."></textarea>
-      </div>
-      <div class="form-group">
-        <label>Horario</label>
-        <select id="schedule-select">
-          <option value="7:00 AM">7:00 AM</option>
-          <option value="7:00 PM">7:00 PM</option>
-          <option value="custom">Personalizado</option>
-        </select>
-      </div>
-      <div id="custom-time-input" style="display:none;" class="form-group">
-        <label>Hora personalizada (HH:MM)</label>
-        <input type="text" id="custom-time" placeholder="Ej: 08:30">
-      </div>
-      <div class="form-group">
-        <label>Número de Teléfono (Receptor)</label>
-        <input type="text" id="phone-input" placeholder="+593 97 863 4226">
-      </div>
-      <button class="btn-primary btn-modal" id="btn-save-msg">Guardar Mensaje</button>
-    </div>
-
-    <!-- Config View -->
-    <div id="view-config" style="display:none;">
-      <h2>Configuración</h2>
-      <p>Escanea el código QR para vincular tu cuenta de WhatsApp.</p>
-      <div style="background:#f8f9fa; padding:20px; border-radius:12px; margin:20px 0;">
-        <div id="qr-placeholder" style="height:300px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px dashed var(--gray-300);">
-          <span style="color:var(--gray-400);">QR de WhatsApp Web — Carga en progreso...</span>
-        </div>
-      </div>
-      <button class="btn-primary" id="btn-test-send">Enviar Prueba</button>
-    </div>
-  </main>
-
-  <!-- Modal: Confirmación WhatsApp no vinculado -->
-  <div class="modal-overlay" id="modal-whatsapp">
-    <div class="modal">
-      <div class="modal-header">
-        <div class="modal-title">WhatsApp no vinculado</div>
-        <button class="modal-close" id="close-modal">&times;</button>
-      </div>
-      <div class="modal-body">
-        <p>Por favor, vincula tu cuenta de WhatsApp en la sección <strong>"Configuración"</strong>.</p>
-        <button class="btn-primary" id="btn-go-to-config">Ir a Configuración</button>
-      </div>
+  <!-- Vista: Dashboard -->
+  <div id="view-dashboard">
+    <table>
+      <thead>
+        <tr>
+          <th>Fecha</th>
+          <th>Hora</th>
+          <th>Mensaje</th>
+          <th>Horario</th>
+          <th>Estado</th>
+        </tr>
+      </thead>
+      <tbody id="msg-table-body">
+        <tr><td colspan="5" style="text-align:center; padding: 40px;">No hay mensajes programados</td></tr>
+      </tbody>
+    </table>
+    <div style="margin-top: 20px; color: var(--gray-400);">
+      <strong>Resumen:</strong> <span id="summary">0 mensajes activos</span>
     </div>
   </div>
 
-  <!-- Footer -->
-  <footer>
-    <div class="footer-info">
-      <span>Emisor: Tú</span>
-      <span>Receptor: <span id="receiver-name">N/A</span></span>
-      <span>Mensajes programados: <span id="footer-count">0</span></span>
+  <!-- Vista: Añadir -->
+  <div id="view-add" style="display:none;">
+    <h2>Añadir Nuevo Mensaje</h2>
+    <div style="margin-bottom: 16px;">
+      <label>Mensaje</label>
+      <textarea id="msg-text" rows="3" placeholder="Escribe tu mensaje de amor..."></textarea>
     </div>
-  </footer>
+    <div style="margin-bottom: 16px;">
+      <label>Horario</label>
+      <select id="schedule-select">
+        <option value="7:00 AM">7:00 AM</option>
+        <option value="7:00 PM">7:00 PM</option>
+      </select>
+    </div>
+    <div style="margin-bottom: 16px;">
+      <label>Número de Teléfono</label>
+      <input type="text" id="phone-input" placeholder="+593 97 863 4226">
+    </div>
+    <button class="btn-primary" id="btn-save-msg">Guardar Mensaje</button>
+  </div>
 
-  <script>
-    // === Clock ===
-    function updateClock() {
-      const now = new Date();
-      const options = { timeZone: 'America/Guayaquil', hour12: false };
-      const timeStr = now.toLocaleTimeString('es-EC', { ...options, hour: '2-digit', minute: '2-digit', second: '2-digit' });
-      const dateStr = now.toLocaleDateString('es-EC', { weekday: 'short', year: 'numeric', month: 'short', day: 'numeric' });
-      document.getElementById('clock').textContent = `Quito, Ecuador | ${timeStr} GMT-5`;
-      setTimeout(updateClock, 1000);
-    }
-    updateClock();
+  <!-- Vista: Configuración -->
+  <div id="view-config" style="display:none;">
+    <h2>Configuración</h2>
+    <p>Escanea el código QR para vincular tu cuenta de WhatsApp.</p>
+    <div id="qr-container" style="background:#f8f9fa; padding:20px; border-radius:12px; margin:20px 0; text-align:center;">
+      <div id="qr-placeholder" style="height:300px; display:flex; align-items:center; justify-content:center; background:#fff; border:1px dashed var(--gray-300);">
+        <span style="color:var(--gray-400);">QR de WhatsApp Web — Carga en progreso...</span>
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-test-send">Enviar Prueba</button>
+  </div>
+</main>
 
-    // === Status Indicator ===
-    function updateStatus(connected) {
+<div class="modal-overlay" id="modal-whatsapp">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">WhatsApp no vinculado</div>
+      <button class="modal-close" id="close-modal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <p>Por favor, vincula tu cuenta de WhatsApp en la sección <strong>"Configuración"</strong>.</p>
+      <button class="btn-primary" id="btn-go-to-config">Ir a Configuración</button>
+    </div>
+  </div>
+</div>
+
+<footer>
+  Emisor: Tú | Receptor: <span id="receiver">N/A</span> | Programados: <span id="count">0</span>
+</footer>
+
+<script>
+  // === Clock ===
+  function updateClock() {
+    const now = new Date();
+    const timeStr = now.toLocaleTimeString('es-EC', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    const dateStr = now.toLocaleDateString('es-EC', { weekday: 'short', day: 'numeric', month: 'short' });
+    document.getElementById('clock').textContent = `${dateStr} | ${timeStr} GMT-5`;
+    setTimeout(updateClock, 1000);
+  }
+  updateClock();
+
+  // === Status Indicator ===
+  async function updateStatus() {
+    try {
+      const res = await fetch('/api/status');
+      const data = await res.json();
       const dot = document.getElementById('status-dot');
       const text = document.getElementById('status-text');
-      if (connected) {
+      if (data.connected) {
         dot.classList.add('connected');
         text.textContent = 'Envío de Mensajes';
         text.classList.add('connected');
@@ -409,148 +286,86 @@
         text.textContent = 'WhatsApp no vinculado';
         text.classList.remove('connected');
       }
+    } catch (e) {
+      console.error("Error al obtener estado:", e);
+      document.getElementById('status-text').textContent = 'Error de conexión';
+    }
+  }
+  updateStatus();
+  setInterval(updateStatus, 10000); // Refresca cada 10s
+
+  // === Sidebar Navigation ===
+  document.querySelectorAll('.sidebar-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.view;
+      document.querySelectorAll('#view-dashboard, #view-add, #view-config').forEach(v => v.style.display = 'none');
+      document.getElementById(`view-${view}`).style.display = 'block';
+    });
+  });
+
+  // === Guardar mensaje ===
+  document.getElementById('btn-save-msg').addEventListener('click', async () => {
+    const msg = document.getElementById('msg-text').value.trim();
+    const schedule = document.getElementById('schedule-select').value;
+    const phone = document.getElementById('phone-input').value.trim();
+
+    if (!msg) {
+      alert('El mensaje no puede estar vacío.');
+      return;
     }
 
-    // Simulamos estado (en producción, esto vendrá de /api/status)
-    fetch('/api/status')
-      .then(r => r.json())
-      .then(data => updateStatus(data.connected))
-      .catch(() => updateStatus(false));
-
-    // === Sidebar Navigation ===
-    document.querySelectorAll('.sidebar-btn')?.forEach(btn => {
-      btn.addEventListener('click', () => {
-        document.querySelectorAll('.sidebar-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        const target = btn.dataset.target;
-        document.querySelectorAll('#main-content > div').forEach(v => v.style.display = 'none');
-        document.getElementById(`view-${target}`).style.display = 'block';
+    try {
+      const res = await fetch('/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ message: msg, schedule_time: schedule })
       });
-    });
-
-    // === Modal WhatsApp ===
-    const modal = document.getElementById('modal-whatsapp');
-    const closeModal = document.getElementById('close-modal');
-    const btnGoToConfig = document.getElementById('btn-go-to-config');
-
-    function showWhatsAppModal() {
-      modal.style.display = 'flex';
+      if (res.ok) {
+        alert('✅ Mensaje guardado.');
+        document.getElementById('msg-text').value = '';
+        // Recargar tabla (simulado)
+        document.getElementById('msg-table-body').innerHTML =
+          `<tr><td>2026-04-10</td><td>08:15</td><td>${msg}</td><td>${schedule}</td><td class="status-cell"><div class="status-icon"></div>Pendiente</td></tr>`;
+        document.getElementById('summary').textContent = '1 mensaje activo';
+        document.getElementById('count').textContent = '1';
+      } else {
+        const err = await res.json();
+        alert('Error: ' + (err.error || 'desconocido'));
+      }
+    } catch (e) {
+      alert('Error de red');
     }
-    closeModal.onclick = () => modal.style.display = 'none';
-    btnGoToConfig.onclick = () => {
-      document.querySelector('[data-target="config"]').click();
-      modal.style.display = 'none';
-    };
+  });
 
-    // === Botón Guardar Mensaje ===
-    document.getElementById('btn-save-msg').addEventListener('click', async () => {
-      const msg = document.getElementById('msg-text').value.trim();
-      const schedule = document.getElementById('schedule-select').value;
-      let time = schedule;
-      if (schedule === 'custom') {
-        time = document.getElementById('custom-time').value.trim();
-        if (!/^\d{2}:\d{2}$/.test(time)) {
-          alert('Formato de hora inválido. Usa HH:MM');
-          return;
-        }
-      }
-
-      const phoneInput = document.getElementById('phone-input').value.trim();
-      let phone = phoneInput;
-      // Corrección automática: 09... → +593 XX XXX XXXX
-      if (/^09\d{8}$/.test(phone)) {
-        phone = '+593 ' + phone.substring(2, 4) + ' ' + phone.substring(4, 7) + ' ' + phone.substring(7);
-      } else if (/^\d{9,10}$/.test(phone) && !phone.startsWith('+')) {
-        // Asumimos Ecuador: +593 + 9 dígitos
-        phone = '+593 ' + phone.substring(0, 2) + ' ' + phone.substring(2, 5) + ' ' + phone.substring(5);
-      }
-      document.getElementById('phone-input').value = phone;
-
-      if (!msg) {
-        alert('El mensaje no puede estar vacío.');
-        return;
-      }
-
-      try {
-        const res = await fetch('/api/messages', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message: msg, schedule_time: time })
-        });
-        if (res.ok) {
-          alert('✅ Mensaje guardado correctamente.');
-          document.getElementById('msg-text').value = '';
-          // Recargar tabla (simulado)
-          loadMessages();
-        } else {
-          alert('Error al guardar.');
-        }
-      } catch (e) {
-        console.error(e);
-        alert('Error de red.');
-      }
-    });
-
-    // === Cargar mensajes (simulado — en producción usa /api/messages/morning + /night)
-    async function loadMessages() {
-      // En tu app.py ya tienes endpoints como:
-      // /api/messages/morning → GET
-      // /api/messages/night → GET
-      // Aquí simulamos con datos estáticos para demo
-      const rows = [
-        { id: 1, created_at: "2026-04-10 08:15:22", message: "Buenos días, mi vida ❤️", schedule_time: "7:00 AM", sent: 0 },
-        { id: 2, created_at: "2026-04-10 18:30:05", message: "Te quiero más cada día 🌙", schedule_time: "7:00 PM", sent: 1 },
-      ];
-      const tbody = document.getElementById('messages-table');
-      tbody.innerHTML = rows.map(r => `
-        <tr>
-          <td>${r.created_at.split(' ')[0]}</td>
-          <td>${r.created_at.split(' ')[1]}</td>
-          <td>${r.message}</td>
-          <td>${r.schedule_time}</td>
-          <td class="status-cell">
-            <div class="status-icon ${r.sent ? 'sent' : 'pending'}"></div>
-            <span>${r.sent ? '✓ Enviado' : '✕ Pendiente'}</span>
-          </td>
-        </tr>
-      `).join('');
-      document.getElementById('summary').textContent = `${rows.filter(r => !r.sent).length} pendientes, ${rows.filter(r => r.sent).length} enviados`;
-      document.getElementById('footer-count').textContent = rows.length;
-      document.getElementById('receiver-name').textContent = 'Tu Novia';
+  // === Enviar prueba ===
+  document.getElementById('btn-test-send').addEventListener('click', async () => {
+    const status = document.getElementById('status-dot').classList.contains('connected');
+    if (!status) {
+      document.getElementById('modal-whatsapp').style.display = 'flex';
+      return;
     }
+    try {
+      const res = await fetch('/api/send-test', { method: 'POST' });
+      const data = await res.json();
+      alert(data.success ? '✅ Mensaje enviado.' : '❌ Error: ' + (data.error || 'desconocido'));
+    } catch (e) {
+      alert('Error de conexión');
+    }
+  });
 
-    // Iniciar carga
-    loadMessages();
+  // === Modal WhatsApp ===
+  document.getElementById('close-modal').onclick = () => {
+    document.getElementById('modal-whatsapp').style.display = 'none';
+  };
+  document.getElementById('btn-go-to-config').onclick = () => {
+    document.querySelector('[data-view="config"]').click();
+    document.getElementById('modal-whatsapp').style.display = 'none';
+  };
 
-    // === Horario personalizado toggle ===
-    document.getElementById('schedule-select').addEventListener('change', function() {
-      const customInput = document.getElementById('custom-time-input');
-      if (this.value === 'custom') {
-        customInput.style.display = 'block      } else {
-        customInput.style.display = 'none';
-      }
-    });
-
-    // === Simular envío de prueba ===
-    document.getElementById('btn-test-send').addEventListener('click', async () => {
-      const status = document.getElementById('status-dot').classList.contains('connected');
-      if (!status) {
-        showWhatsAppModal();
-        return;
-      }
-      try {
-        const res = await fetch('/api/send-test', { method: 'POST' });
-        const data = await res.json();
-        alert(data.success ? '✅ Mensaje de prueba enviado.' : '❌ Error: ' + (data.error || 'desconocido'));
-      } catch (e) {
-        alert('Error de conexión');
-      }
-    });
-
-    // === Inicialización ===
-    document.getElementById('btn-manage').onclick = () => {
-      document.querySelector('[data-target="dashboard"]').click();
-    };
-  </script>
+  // === Inicializar vista dashboard activa
+  document.querySelector('[data-view="dashboard"]').click();
+</script>
 </body>
 </html>
