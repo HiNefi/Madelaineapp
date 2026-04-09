@@ -12,7 +12,10 @@ app = Flask(__name__, static_folder='templates')
 
 @app.route("/")
 def index():
-    return send_from_directory(app.static_folder, "index.html")
+    try:
+        return send_from_directory(app.static_folder, "index.html")
+    except FileNotFoundError:
+        return "<h1>✅ App running — but index.html missing.</h1><p>Upload templates/index.html to fix.</p>", 200
 
 @app.route("/api/messages", methods=["POST"])
 def api_add_message():
@@ -59,38 +62,3 @@ def api_send_test():
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port, debug=True)
-# ══════════════════════════════════════════════════════════════════════════
-# WhatsApp API
-# ══════════════════════════════════════════════════════════════════════════
-
-@app.route("/api/whatsapp/status")
-def api_wa_status():
-    return jsonify({"connected": wa_sender.is_connected()})
-
-
-@app.route("/api/whatsapp/qr")
-def api_wa_qr():
-    return jsonify({"screenshot": wa_sender.screenshot_b64()})
-
-
-@app.route("/api/whatsapp/restart", methods=["POST"])
-def api_wa_restart():
-    wa_sender.restart()
-    return jsonify({"success": True, "connected": wa_sender.is_connected()})
-
-
-@app.route("/api/whatsapp/test", methods=["POST"])
-def api_wa_test():
-    data    = request.get_json(force=True) or {}
-    message = data.get("message", "¡Hola mi amor! 💕 Mensaje de prueba.")
-    ok      = wa_sender.send_message(message)
-    return jsonify({"success": ok})
-
-
-# ══════════════════════════════════════════════════════════════════════════
-# Run
-# ══════════════════════════════════════════════════════════════════════════
-
-if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=port, debug=False)
