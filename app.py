@@ -1,71 +1,65 @@
-"""
-Flask entry-point for Mensajes de Amor.
-Starts the scheduler and exposes a JSON API consumed by the SPA front-end.
-"""
-
-import logging
 import os
+from flask import Flask, request, jsonify, send_from_directory
+from datetime import datetime
 
-from flask import Flask, jsonify, render_template, request
+# --- NO INSTANCIAR DB AQUÍ ---
+def get_db():
+    if not hasattr(get_db, "_instance"):
+        from database import Database
+        get_db._instance = Database()
+    return get_db._instance
 
-from database import Database
-from scheduler import MessageScheduler
-from whatsapp_sender import WhatsAppSender
-
-# ── logging ────────────────────────────────────────────────────────────────
-logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s  %(levelname)-8s  %(name)s – %(message)s",
-)
-log = logging.getLogger(__name__)
-
-# ── app setup ──────────────────────────────────────────────────────────────
-app = Flask(__name__)
-
-db        = Database()
-wa_sender = WhatsAppSender()
-scheduler = MessageScheduler(db, wa_sender)
-scheduler.start()
-
-
-# ══════════════════════════════════════════════════════════════════════════
-# Views
-# ══════════════════════════════════════════════════════════════════════════
+app = Flask(__name__, static_folder='templates')
 
 @app.route("/")
 def index():
-    return render_template("index.html")
-
-
-# ══════════════════════════════════════════════════════════════════════════
-# Messages API
-# ══════════════════════════════════════════════════════════════════════════
-
-@app.route("/api/messages/morning")
-def api_morning():
-    return jsonify(db.get_active_messages("7:00 AM"))
-
-
-@app.route("/api/messages/night")
-def api_night():
-    return jsonify(db.get_active_messages("7:00 PM"))
-
-
-@app.route("/api/messages/sent")
-def api_sent():
-    return jsonify(db.get_sent_messages())
-
+    return send_from_directory(app.static_folder, "index.html")
 
 @app.route("/api/messages", methods=["POST"])
-def api_add():
-    data          = request.get_json(force=True) or {}
-    message       = (data.get("message") or "").strip()
-    schedule_time = data.get("schedule_time", "")
+def api_add_message():
+    data = request.get_json()
+    message = data.get("message", "").strip    schedule_time = data.get("schedule_time", "")
 
     if not message:
         return jsonify({"error": "El mensaje no puede estar vacío."}), 400
     if schedule_time not in ("7:00 AM", "7:00 PM"):
-        return jsonify({"error": "Horario inválido."}), 400
+        return jsonify({"error": "Horario inválido. Use '7:00 AM' o '7:00 PM'."}), 400
+
+    db = get_db()
+    db.add_message(message, schedule_time)
+    return jsonify({"success": True})
+
+@app.route("/api/messages/<int:msg_id>", methods=["DELETE"])
+def api_delete(msg_id):
+    db = get_db()
+    db.delete_message(msg_id)
+    return jsonify({"success": True})
+
+@app.route("/api/status")
+def api_status():
+    try:
+        from whatsapp_sender import WhatsAppSender
+        wa = WhatsAppSender.get_instance()
+        return jsonify({"connected": wa.is_connected()})
+    except Exception as e:
+        return jsonify({"connected": False, "error": str(e)}), 500
+
+@app.route("/api/send-test", methods=["POST"])
+def api_send_test():
+    try:
+        from whatsapp_sender import WhatsAppSender
+        wa = WhatsAppSender.get_instance()
+        if not wa.is_connected():
+            return jsonify({"error": "WhatsApp no conectado"}), 400
+        success = wa.send_message("✅ Mensaje de prueba desde Railway")
+        return jsonify({"success": success})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Solo para desarrollo local (no usado en Gunicorn)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=port, debug=True)        return jsonify({"error": "Horario inválido."}), 400
 
     db.add_message(message, schedule_time)
     return jsonify({"success": True})
